@@ -1,0 +1,44 @@
+import discord
+from discord.ext import commands
+import random
+import os
+
+intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f"Bot SHIP online como {bot.user}")
+
+# -------------------------
+# Comando: !ship @pessoa1 @pessoa2
+# -------------------------
+@bot.command()
+async def ship(ctx, pessoa1: discord.Member, pessoa2: discord.Member):
+    porcentagem = random.randint(0, 100)
+    
+    if porcentagem < 30:
+        msg = "💔 Não combinam muito..."
+    elif porcentagem < 70:
+        msg = "💛 Até que combinam!"
+    else:
+        msg = "❤️ Perfeitos juntos!!!"
+
+    embed = discord.Embed(
+        title="💘 SHIP LOVE CALCULATOR 💘",
+        description=f"{pessoa1.mention} ❤️ {pessoa2.mention}",
+        color=discord.Color.pink()
+    )
+    embed.add_field(name="Compatibilidade", value=f"**{porcentagem}%**")
+    embed.add_field(name="Resultado", value=msg)
+
+    await ctx.send(embed=embed)
+
+# -------------------------
+# Iniciar o bot
+# -------------------------
+TOKEN = os.getenv("TOKEN")
+bot.run(TOKEN)
